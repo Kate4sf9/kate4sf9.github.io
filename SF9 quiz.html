@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SF9 Quiz Game</title>
+    <style>
+        body {
+            background-color: blueviolet; /* Background color */
+            font-family: Arial, sans-serif;
+            color: white; /* Text color */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .quiz-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: pink; /* Quiz container background color */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question {
+            display: none;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #45a049;
+        }
+        
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .progress {
+            margin-top: 20px;
+        }
+
+        @media screen and (max-width: 600px) {
+           .quiz-container {
+               margin: 20px;
+               padding: 10px;
+           }
+           
+           input[type="text"] {
+               padding: 8px;
+           }
+           
+           .btn {
+               padding: 8px 16px;
+           }
+       }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>SF9 Quiz Game</h1>
+        <div class="question">
+            <p>Who is the leader of SF9?</p>
+            <input type="text" id="q1" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">youngbin</span>
+        </div>
+        <div class="question">
+            <p>Which member have a twitter account?</p>
+            <input type="text" id="q2" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">Hwiyoung</span>
+        </div>
+        <div class="question">
+            <p>Which member participated in the survival show 'Produce 101'?</p>
+            <input type="text" id="q3" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">Chani</span>
+        </div>
+        <div class="question">
+            <p>Which member is the main dancer of SF9?</p>
+            <input type="text" id="q4" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">taeyang</span>
+        </div>
+        <div class="question">
+            <p>Which member is the oldest in SF9?</p>
+            <input type="text" id="q5" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">inseong</span>
+        </div>
+        <div class="question">
+            <p>What is the name of SF9's Fandom?</p>
+            <input type="text" id="q6" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">fantasy</span>
+        </div>
+        <div class="question">
+            <p>What year did SF9 debut?</p>
+            <input type="text" id="q7" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">2016</span>
+        </div>
+        <div class="question">
+            <p>What year did Youngbin and Inseong leave the military?</p>
+            <input type="text" id="q8" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">2023</span>
+        </div>
+        <div class="question">
+            <p>What year is Jaeyoon getting discharged from the military?</p>
+            <input type="text" id="q9" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">2024</span>
+        </div>
+        <div class="question">
+            <p>What month did Inseong change his phone?</p>
+            <input type="text" id="q10" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">march</span>
+        </div>
+        <div class="question">
+            <p>Do you want Dawon to enlist in the military this year?</p>
+            <input type="text" id="q11" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">no</span>
+        </div>
+        <div class="question">
+            <p>Number of the current SF9 members?</p>
+            <input type="text" id="q12" placeholder="Your Answer" oninput="enableSubmitButton()">
+            <span class="answer" style="display:none;">8</span>
+        </div>
+        <button class="btn" onclick="checkAnswer()" disabled>Submit Answer</button>
+        <button class="btn" onclick="nextQuestion()" style="display:none;">Next</button>
+        <button class="btn" onclick="restartQuiz()" style="display:none;">Restart</button>
+        <p id="result"></p>
+        <p class="feedback"></p>
+        <p class="progress"></p>
+    </div>
+    <script>
+        var currentQuestionIndex = 0;
+        var questions = document.querySelectorAll('.question');
+        var submitButton = document.querySelector('.btn');
+        var nextButton = document.querySelectorAll('.btn')[1];
+        var restartButton = document.querySelectorAll('.btn')[2];
+        var feedback = document.querySelector('.feedback');
+        var progress = document.querySelector('.progress');
+        var score = 0;
+        
+        // Display the first question
+        questions[currentQuestionIndex].style.display = 'block';
+        progress.textContent = "Question " + (currentQuestionIndex + 1) + " of " + questions.length;
+        
+        function enableSubmitButton() {
+            submitButton.disabled = false;
+        }
+        
+        function checkAnswer() {
+            var currentQuestion = questions[currentQuestionIndex];
+            var playerAnswer = currentQuestion.querySelector('input').value.trim().toLowerCase();
+            var correctAnswer = currentQuestion.querySelector('.answer').innerText.toLowerCase();
+            
+            if (playerAnswer === correctAnswer) {
+                feedback.textContent = "Correct!";
+                score++;
+            } else {
+                feedback.textContent = "Incorrect. The correct answer is: " + correctAnswer;
+            }
+            
+            submitButton.style.display = 'none';
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                showResult();
+            } else {
+                nextButton.style.display = 'inline-block';
+            }
+        }
+        
+        function nextQuestion() {
+            currentQuestionIndex++;
+            questions[currentQuestionIndex - 1].style.display = 'none';
+            questions[currentQuestionIndex].style.display = 'block';
+            submitButton.style.display = 'inline-block';
+            submitButton.disabled = true; // Disable the submit button initially
+            nextButton.style.display = 'none';
+            feedback.textContent = '';
+            progress.textContent = "Question " + (currentQuestionIndex + 1) + " of " + questions.length;
+        }
+        
+        function showResult() {
+            var result = document.getElementById('result');
+            result.textContent = "Your score: " + score + " out of " + questions.length;
+            restartButton.style.display = 'inline-block';
+        }
+        
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            feedback.textContent = '';
+            progress.textContent = "Question " + (currentQuestionIndex + 1) + " of " + questions.length;
+            result.textContent = '';
+            restartButton.style.display = 'none';
+            questions.forEach(function(question) {
+                question.style.display = 'none';
+            });
+            questions[0].style.display = 'block';
+            submitButton.style.display = 'inline-block';
+            submitButton.disabled = true; // Disable the submit button initially
+        }
+    </script>
+</body>
+</html>
